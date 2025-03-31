@@ -40,7 +40,7 @@ class HomePage extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  'Aquarium View',
+                  'testing',
                   style: TextStyle(fontSize: 24, color: Colors.white),
                 ),
               ),
