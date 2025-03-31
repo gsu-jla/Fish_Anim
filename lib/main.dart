@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 // Entry point of the application
 void main() {
@@ -10,13 +11,48 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: HomePage(), // Set HomePage as the default screen
+      home: AquariumScreen(), // Set AquariumScreen as the default screen
     );
   }
 }
 
-// Home page widget
-class HomePage extends StatelessWidget {
+// Aquarium screen widget
+class AquariumScreen extends StatefulWidget {
+  @override
+  _AquariumScreenState createState() => _AquariumScreenState();
+}
+
+// State of the aquarium screen
+class _AquariumScreenState extends State<AquariumScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  final Random _random = Random();
+  Offset _fishPosition = Offset(150, 150); // Initial position in the center
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 250), // Move every quarter second
+      vsync: this,
+    )..repeat(); // Repeat the animation indefinitely
+
+    // Update fish position periodically
+    _controller.addListener(() {
+      setState(() {
+        _fishPosition = Offset(
+          (_fishPosition.dx + 2) % 300,
+          (_fishPosition.dy + 2) % 300,
+        );
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,11 +74,21 @@ class HomePage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20), // Rounded corners
                 border: Border.all(color: Colors.black, width: 3), // Border
               ),
-              child: Center(
-                child: Text(
-                  'testing',
-                  style: TextStyle(fontSize: 24, color: Colors.white),
-                ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: _fishPosition.dx,
+                    top: _fishPosition.dy,
+                    child: Container(
+                      width: 5,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: Colors.orange, // Fish color
+                        shape: BoxShape.circle, // Circular shape
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             SizedBox(height: 16),
